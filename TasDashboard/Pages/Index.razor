@@ -1,0 +1,91 @@
+﻿@page "/"
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.DropDowns
+
+<PageTitle>Index</PageTitle>
+
+<ProGrid TValue="Order" RowHeight="@GridRowHeight" ID="Grid" @ref="Grid" DataSource="Orders" Toolbar="@Toolbaritems" AllowReordering="true" AllowResizing="true" AllowExcelExport="true" AllowSelection="true" AllowGrouping="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true">
+	<GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Batch"></GridEditSettings>
+	<GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+	<GridPageSettings PageSizes="true"></GridPageSettings>
+	<GridSelectionSettings Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></GridSelectionSettings>
+	<GridEvents OnToolbarClick="ToolbarClick" TValue="Order"></GridEvents>
+	<GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"></GridFilterSettings>
+</ProGrid>
+
+@code{
+	private List<Object> Toolbaritems = new List<Object>() { "Add", "Edit", "Delete", "Update", "Cancel", "ExcelExport", "CsvExport", "PdfExport", "Print", "Search", new ItemModel { PrefixIcon = "e-line-very-small", Id = "small", Align = ItemAlign.Right, TooltipText = "20px" }, new ItemModel { PrefixIcon = "e-line-small ", Id = "medium", Align = ItemAlign.Right, TooltipText = "40px" }, new ItemModel { PrefixIcon = "e-line-normal", Id = "big", Align = ItemAlign.Right, TooltipText = "60px" } };
+	SfGrid<Order>? Grid;
+	private int GridRowHeight = 20;
+	public class Test
+	{
+		public int count { get; set; }
+	}
+	public class Order
+	{
+		public int? OrderID { get; set; }
+		public string? CustomerID { get; set; }
+		public DateTime? OrderDate { get; set; }
+		public double? Freight { get; set; }
+		public string? ShipCountry { get; set; }
+	}
+	private List<Test> Data = new List<Test>();
+	private List<Order> Orders = new List<Order>();
+	protected override void OnInitialized()
+	{
+		Orders = Enumerable.Range(1, 75).Select(x => new Order()
+			{
+				OrderID = 1000 + x,
+				CustomerID = (new string[] { "ALFKI", "ANANTR", "ANTON", "BLONP", "BOLID" })[new Random().Next(5)],
+				Freight = 2.1 * x,
+				OrderDate = DateTime.Now.AddDays(-x),
+				ShipCountry = (new string[] { "USA", "UK", "CHINA", "RUSSIA", "INDIA" })[new Random().Next(5)]
+			}).ToList();
+	}
+	public void ToolbarClick(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+	{
+		if (args.Item.Id == "Grid_excelexport")
+		{
+			this.Grid?.ExportToExcelAsync();
+		}
+		else if (args.Item.Id == "Grid_csvexport")
+		{
+			this.Grid?.ExportToCsvAsync();
+		}
+		else if (args.Item.Id == "Grid_pdfexport")
+		{
+			this.Grid?.ExportToPdfAsync();
+		}
+		else if (args.Item.Id == "print")
+		{
+			this.Grid?.PrintAsync();
+		}
+		else if (args.Item.Id == "small")
+		{
+			GridRowHeight = 20;
+		}
+		else if (args.Item.Id == "medium")
+		{
+			GridRowHeight = 40;
+		}
+		else if (args.Item.Id == "big")
+		{
+			GridRowHeight = 60;
+		}
+	}
+}
+<style>
+	.ulstyle {
+		margin: 0px;
+		padding-left: 20px;
+		display: inline-block;
+	}
+
+	.list {
+		float: left;
+		line-height: 20px;
+		margin: 10px;
+		min-width: 200px;
+	}
+</style>
